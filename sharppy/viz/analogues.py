@@ -112,7 +112,7 @@ class backgroundAnalogues(QtGui.QFrame):
         qp.setFont(self.title_font)
         rect0 = QtCore.QRect(0, self.tpad, self.brx, self.title_height)
         qp.drawText(rect0, QtCore.Qt.TextDontClip | QtCore.Qt.AlignCenter,
-            'SARS - Sounding Analogue System')
+            'SARS - Sounding Analogs')
         self.ylast += (self.title_height + self.tpad)
         
         ## draw some lines to seperate the hail and supercell windows,
