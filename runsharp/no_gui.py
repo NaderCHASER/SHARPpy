@@ -81,13 +81,13 @@ class SHARPPlot(object):
     def get_loc(self, model, run, site):
         loc = None
         for x in self.data_sources[model].getAvailableAtTime(run):
-            if x['icao'] == site:
+            if x['icao'].upper() == site.upper():
                 loc = x
                 break
-            elif x['iata'] == site:
+            elif x['iata'].upper() == site.upper():
                 loc = x
                 break
-            elif x['srcid'].upper() == site:
+            elif x['srcid'].upper() == site.upper():
                 loc = x
                 break
         return loc
