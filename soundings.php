@@ -3,62 +3,60 @@ $model = escapeshellcmd($_GET['m']);
 $run = escapeshellcmd($_GET['r']);
 $fh = escapeshellcmd($_GET['fh']);
 
-function getClosest($search, $arr) {
-    $closest = null;
+function getClosest($searchLat, $searchLon, $arr) {
+    $closestLat = null;
+    $closestLon = null;
     $closestItem = null;
     foreach($arr as $item) {
-        foreach($item as $key => $value) {
-            if($closest == null || abs((float) $search - (float) $closest) > abs((float) $value - (float) $search)) {
-                $closest = $value;
+            if($closestLat == null || abs((float) $searchLat - (float) $closestLat) > abs((float) $item['lat'] - (float) $searchLat) && abs((float) $searchLon - (float) $closestLon) > abs((float) $item['lon'] - (float) $searchLon)) {
+                $closestLat = $item['lat'];
+                $closestLon = $item['lon'];
                 $closestItem = $item;
             }
-        }
     }
     return $closestItem;
 }
 
 if(isset($_GET['id']) && !empty($_GET['id'])) {
-	$id = escapeshellcmd($_GET['id']);
+        $id = escapeshellcmd($_GET['id']);
 } else {
-	$lat = escapeshellcmd($_GET['lat']);
-	$lon = escapeshellcmd($_GET['lon']);
+        $lat = escapeshellcmd($_GET['lat']);
+        $lon = escapeshellcmd($_GET['lon']);
+        $sites = [];
 
-	$stationFile = 'spc_ua';
-	switch(strtolower($model)) {
-		'3km nam':
-			$stationFile = 'nam_3km';
-			break;
+        $stationFile = 'spc_ua';
+        switch(strtolower($model)) {
+                case '3km nam':
+                        $stationFile = 'nam_3km';
+                        break;
 
-		'observed':
-			$stationFile = 'spc_ua';
-			break;
+                case 'observed':
+                        $stationFile = 'spc_ua';
+                        break;
 
-		default:
-			$stationFile = strtolower($model);
-			break;
-	}
+                default:
+                        $stationFile = strtolower($model);
+                        break;
+        }
 
-	$handle = fopen('/sharppy/datasources/' . $stationFile . '.csv', 'r') or die('# Could not figure out lat/lon');
+        $handle = fopen('/sharppy/datasources/' . $stationFile . '.csv', 'r') or die('# Could not figure out lat/lon');
 
-	while (!feof($handle)) {
-	    list ($icao,$iata,$synop,$name,$state,$country,$slat,$slon,$elev,$priority,$srcid) = fscanf($handle,"%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n");
-	    $sites[] = array(
-	        'icao' => $icao,
-		'srcid' => $srcid,
-	        'lat' => $slat,
-	        'lon' => $slon
-	    );
-	}
+        while (!feof($handle)) {
+            list ($icao,$iata,$synop,$name,$state,$country,$slat,$slon,$elev,$priority,$srcid) = fgetcsv($handle);
+            $sites[] = array(
+                'icao' => $icao,
+                'srcid' => $srcid,
+                'lat' => $slat,
+                'lon' => $slon
+            );
+        }
 
-	$closest = self::getClosest($lat, $sites);
+        $closest = getClosest($lat, $lon, $sites);
 
-	$close = self::getClosest($lon, $sites);
+        # var_dump($closest);
+        # exit;
 
-	if($closest['srcid'] !== $close['srcid']) {
-		$closest = $close;
-	}
-	
-	$id = $closest['srcid'];
+        $id = $closest['icao'];
 }
 
 putenv('DISPLAY=:99');
@@ -73,8 +71,10 @@ if(file_exists($filePath)) {
         header("Content-Type: image/png");
         header("Content-Length: " . filesize($filePath));
 
-	fpassthru($fp);
+        fpassthru($fp);
 } else {
-	echo "There was an error generating your sounding.";
+        echo $filePath . "<br />";
+        echo "There was an error generating your sounding.";
 }
 ?>
+
