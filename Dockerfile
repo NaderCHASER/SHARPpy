@@ -18,11 +18,13 @@ RUN python setup.py install
 
 RUN ln -sf /data /var/www/data
 
-RUN mv /sharppy/soundings.php /var/www/
+RUN mv /sharppy/soundings.php /var/www/ && mv /sharppy/lbcheck.html /var/www/
 
 RUN rm -rf /var/www/html
 
 RUN mv /sharppy/nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+
+RUN mv /sharppy/nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /sharppy/runsharp
 CMD /sharppy/run.sh
