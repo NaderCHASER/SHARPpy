@@ -23,7 +23,22 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
 	$lat = escapeshellcmd($_GET['lat']);
 	$lon = escapeshellcmd($_GET['lon']);
 
-	$handle = fopen('/sharppy/datasources/radars.gis', 'r') or die('# Could not figure out lat/lon');
+	$stationFile = 'spc_ua';
+	switch(strtolower($model)) {
+		'3km nam':
+			$stationFile = 'nam_3km';
+			break;
+
+		'observed':
+			$stationFile = 'spc_ua';
+			break;
+
+		default:
+			$stationFile = strtolower($model);
+			break;
+	}
+
+	$handle = fopen('/sharppy/datasources/' . $stationFile . '.csv', 'r') or die('# Could not figure out lat/lon');
 
 	while (!feof($handle)) {
 	    list ($icao,$iata,$synop,$name,$state,$country,$slat,$slon,$elev,$priority,$srcid) = fscanf($handle,"%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n");
