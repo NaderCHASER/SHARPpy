@@ -18,7 +18,7 @@ RUN python setup.py install
 
 RUN ln -sf /data /var/www/data
 
-RUN mv /sharppy/soundings.php /var/www/ && mv /sharppy/lbcheck.html /var/www/
+RUN mv /sharppy/soundings.php /var/www/
 
 RUN rm -rf /var/www/html
 
