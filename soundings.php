@@ -4,6 +4,8 @@ $run = escapeshellcmd($_GET['r']);
 $fh = escapeshellcmd($_GET['fh']);
 $id = escapeshellcmd($_GET['id']);
 
+
+putenv('DISPLAY=:99');
 shell_exec("python /sharppy/runsharp/no_gui.py \"$model\" $run $fh $id");
 
 $filePath = "/var/www/data/${model}_${id}_${run}_${fh}.png";
