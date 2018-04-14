@@ -59,10 +59,12 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
         $id = $closest['icao'];
 }
 
-putenv('DISPLAY=:99');
-shell_exec("python /sharppy/runsharp/no_gui.py \"$model\" $run $fh $id");
-
 $filePath = "/var/www/data/${model}_${id}_${run}_${fh}.png";
+
+if(!file_exists($filePath)) {
+	putenv('DISPLAY=:99');
+	shell_exec("python /sharppy/runsharp/no_gui.py \"$model\" $run $fh $id");
+}
 
 if(file_exists($filePath)) {
         $fp = fopen($filePath, 'rb');
