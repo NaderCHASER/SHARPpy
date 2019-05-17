@@ -27,7 +27,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
         $stationFile = 'spc_ua';
         switch(strtolower($model)) {
                 case '3km nam':
-                        $stationFile = 'nam_3km';
+                        $stationFile = 'nam3km';
                         break;
 
                 case 'observed':
