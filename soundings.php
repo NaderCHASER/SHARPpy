@@ -3,18 +3,17 @@ $model = escapeshellcmd($_GET['m']);
 $run = escapeshellcmd($_GET['r']);
 $fh = escapeshellcmd($_GET['fh']);
 
-function getClosest($searchLat, $searchLon, $arr) {
-    $closestLat = null;
-    $closestLon = null;
-    $closestItem = null;
-    foreach($arr as $item) {
-            if($closestLat == null || abs((float) $searchLat - (float) $closestLat) > abs((float) $item['lat'] - (float) $searchLat) && abs((float) $searchLon - (float) $closestLon) > abs((float) $item['lon'] - (float) $searchLon)) {
-                $closestLat = $item['lat'];
-                $closestLon = $item['lon'];
-                $closestItem = $item;
-            }
-    }
-    return $closestItem;
+function distance($a, $b)
+{
+    list($lat1, $lon1) = array($a['lat'], $a['lon']);
+    list($lat2, $lon2) = $b;
+
+    $theta = $lon1 - $lon2;
+    $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+    $dist = acos($dist);
+    $dist = rad2deg($dist);
+    $miles = $dist * 60 * 1.1515;
+    return $miles;
 }
 
 if(isset($_GET['id']) && !empty($_GET['id'])) {
@@ -43,6 +42,9 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
 
         while (!feof($handle)) {
             list ($icao,$iata,$synop,$name,$state,$country,$slat,$slon,$elev,$priority,$srcid) = fgetcsv($handle);
+	    if ($icao == "icao") {
+		continue;
+	    }
             $sites[] = array(
                 'icao' => $icao,
                 'srcid' => $srcid,
@@ -51,10 +53,16 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
             );
         }
 
-        $closest = getClosest($lat, $lon, $sites);
+	$ref = array($lat, $lon);
 
-        # var_dump($closest);
-        # exit;
+	$distances = array_map(function($item) use($ref) {
+		$a = array_slice($item, -2);
+		return distance($a, $ref);
+	}, $sites);
+
+	asort($distances);
+
+        $closest = $sites[key($distances)];
 
         $id = $closest['icao'];
 }
@@ -63,7 +71,8 @@ $filePath = "/var/www/data/${model}_${id}_${run}_${fh}.png";
 
 if(!file_exists($filePath)) {
 	putenv('DISPLAY=:99');
-	shell_exec("python /sharppy/runsharp/no_gui.py \"$model\" $run $fh $id");
+	$command = "python /sharppy/runsharp/no_gui.py \"$model\" $run $fh $id";
+	shell_exec($command);
 }
 
 if(file_exists($filePath)) {
@@ -75,8 +84,8 @@ if(file_exists($filePath)) {
 
         fpassthru($fp);
 } else {
+	http_response_code(404);
         echo $filePath . "<br />";
-        echo "There was an error generating your sounding.";
+        echo "There was an error generating your sounding.<br />";
 }
 ?>
-
