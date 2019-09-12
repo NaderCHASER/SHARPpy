@@ -1,8 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['pull', 'gcr.io/$PROJECT_ID/$REPO_NAME:latest']
-
-- name: 'gcr.io/cloud-builders/docker'
   args: ['build', '--cache-from', 'gcr.io/$PROJECT_ID/$REPO_NAME:latest', '-t', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA', '.']
   id: 'current'
 
