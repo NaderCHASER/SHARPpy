@@ -26,11 +26,11 @@ RUN mv /sharppy/nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
 RUN mv /sharppy/nginx.conf /etc/nginx/nginx.conf
 
-RUN mv /sharppy/www.conf /etc/php/7.0/fpm/pool.d/
+RUN mv /sharppy/www.conf /etc/php/7.3/fpm/pool.d/
 
 RUN mv /sharppy/.fonts.conf /root/
 
-RUN sed -i 's/^DAEMON_ARGS="/DAEMON_ARGS="-R /g' /etc/init.d/php7.0-fpm
+RUN sed -i 's/^DAEMON_ARGS="/DAEMON_ARGS="-R /g' /etc/init.d/php7.3-fpm
 
 WORKDIR /sharppy/runsharp
 CMD /sharppy/run.sh
