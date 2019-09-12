@@ -10,7 +10,7 @@ RUN echo 'deb-src http://packages.dotdeb.org jessie all' >> /etc/apt/sources.lis
 RUN cd /tmp && wget https://www.dotdeb.org/dotdeb.gpg && apt-key add dotdeb.gpg && rm dotdeb.gpg
 RUN apt-get update -y
 
-RUN apt-get install -y php7.0 php7.0-fpm
+RUN apt-get install -y php php-fpm
 
 COPY . /sharppy
 WORKDIR /sharppy
