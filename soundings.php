@@ -64,7 +64,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
 
         $closest = $sites[key($distances)];
 
-        $id = $closest['icao'];
+	$id = (!empty($closest['icao']) ? $closest['icao'] : $closest['srcid']);
 }
 
 $filePath = "/var/www/data/${model}_${id}_${run}_${fh}.png";
