@@ -69,14 +69,14 @@ class SHARPPlot(object):
         self.skewApp(filename)
         if self.skew is not None:
             pixmap = QPixmap.grabWidget(self.skew.spc_widget)
-            pixmap.save('/data/' + splitext(filename)[0] + '.png', 'PNG', 100)
+            pixmap.save('/data/' + splitext(filename)[0] + '.jpg', 'JPG', 80)
         self.skew = None
     def plot_src(self, model, run, fhour, site):
         
         self.skewApp(model=model, run=run, fhour=fhour, site=site)
         if self.skew is not None:
             pixmap = QPixmap.grabWidget(self.skew.spc_widget)
-            pixmap.save('/data/' + model + '_' + site + '_' + run + '_' + fhour + '.png', 'PNG', 100)
+            pixmap.save('/data/' + model + '_' + site + '_' + run + '_' + fhour + '.jpg', 'JPG', 80)
         self.skew = None
     def get_loc(self, model, run, site):
         loc = None

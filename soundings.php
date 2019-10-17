@@ -67,7 +67,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
 	$id = (!empty($closest['icao']) ? $closest['icao'] : $closest['srcid']);
 }
 
-$filePath = "/var/www/data/${model}_${id}_${run}_${fh}.png";
+$filePath = "/var/www/data/${model}_${id}_${run}_${fh}.jpg";
 
 if(!file_exists($filePath)) {
 	putenv('DISPLAY=:99');
@@ -79,7 +79,7 @@ if(file_exists($filePath)) {
         $fp = fopen($filePath, 'rb');
 
         // send the right headers
-        header("Content-Type: image/png");
+        header("Content-Type: image/jpeg");
         header("Content-Length: " . filesize($filePath));
 
         fpassthru($fp);
